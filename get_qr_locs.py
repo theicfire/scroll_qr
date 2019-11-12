@@ -1,3 +1,9 @@
+# Install via something like this:
+# pip install zbar-py - No external dependencies, works great!
+# pip install plotly==4.2.1
+# pip install pandas - Needed for plotly
+# pip install opencv-python
+# pip install opencv-contrib-python==3.4.2.16 - Not sure if needed
 import cv2
 import zbar
 import time
