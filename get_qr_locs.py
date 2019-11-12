@@ -14,7 +14,7 @@ UNKNOWN_Y_LOC = -9999
 
 
 def read_and_process():
-    vidcap = cv2.VideoCapture('qr_scroll2.mp4')
+    vidcap = cv2.VideoCapture('window-1573599623.mp4')
     success,image = vidcap.read()
     count = 0
     ret = {'x': [], 'diff': [], 'y_loc': []}
@@ -33,11 +33,15 @@ def read_and_process():
         count += 1
     return ret
 
+def only_qrcode_zbar_config():
+    # Turn off everything but ZBAR_QRCODE. Figured out from https://github.com/zplab/zbar-py/blob/master/zbar/zbar.py
+    return [('ZBAR_NONE', 'ZBAR_CFG_ENABLE', 0), ('ZBAR_QRCODE', 'ZBAR_CFG_ENABLE', 1), ('ZBAR_QRCODE', 'ZBAR_CFG_POSITION', 1)]
+
 def get_qr_locs(fpath, prev_y_loc):
     image = cv2.imread(fpath)
     grayImage = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    scanner = zbar.Scanner()
+    scanner = zbar.Scanner(only_qrcode_zbar_config())
     start = time.time()
     results = scanner.scan(grayImage)
     if len(results) > 0:
@@ -45,22 +49,15 @@ def get_qr_locs(fpath, prev_y_loc):
         diff = 0
         if prev_y_loc != UNKNOWN_Y_LOC:
             diff = prev_y_loc - y_loc
-        # print("{}\t{}\t{}".format(fpath, y_loc, diff))
         return (y_loc, diff)
     else:
-        # print("{}\t{}\t{}".format(fpath, 0, 0))
         return (UNKNOWN_Y_LOC, 0)
 
-# files = os.listdir('frames')
-# def compare_key(a):
-    # return int(a.split('.')[0].split('frame')[1])
+def analyze_video():
+    data = read_and_process()
+    fig = px.line(x=data['x'], y=data['y_loc'], title='y_loc')
+    fig.show()
+    fig = px.line(x=data['x'], y=data['diff'], title='y_loc diff')
+    fig.show()
 
-# files.sort(key = compare_key)
-# for fpath in files:
-    # get_qr_locs('frames/' + fpath)
-
-data = read_and_process()
-fig = px.line(x=data['x'], y=data['y_loc'], title='y_loc')
-fig.show()
-fig = px.line(x=data['x'], y=data['diff'], title='y_loc diff')
-fig.show()
+analyze_video()

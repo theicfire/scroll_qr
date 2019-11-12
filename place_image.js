@@ -9,5 +9,3 @@ function make_qr_code(x) {
 }
 
 make_qr_code(10);
-make_qr_code(300);
-make_qr_code(500);
