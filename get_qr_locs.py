@@ -45,6 +45,9 @@ def get_qr_locs(fpath, prev_y_loc):
     start = time.time()
     results = scanner.scan(grayImage)
     if len(results) > 0:
+        if results[0].data != b'http://asyncawait.net':
+            print('ERROR: Bad QR code. Found', results[0].data)
+            return (UNKNOWN_Y_LOC, 0)
         y_loc = results[0].position[0][1]
         diff = 0
         if prev_y_loc != UNKNOWN_Y_LOC:
