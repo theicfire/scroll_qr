@@ -14,7 +14,7 @@ UNKNOWN_Y_LOC = -9999
 
 
 def read_and_process():
-    vidcap = cv2.VideoCapture('window-1573599623.mp4')
+    vidcap = cv2.VideoCapture('window-1573602685.mp4')
     success,image = vidcap.read()
     count = 0
     ret = {'x': [], 'diff': [], 'y_loc': []}
@@ -45,10 +45,12 @@ def get_qr_locs(fpath, prev_y_loc):
     start = time.time()
     results = scanner.scan(grayImage)
     if len(results) > 0:
-        if results[0].data != b'http://asyncawait.net':
-            print('ERROR: Bad QR code. Found', results[0].data)
+        data = results[0].data.decode()
+        if not data.startswith('exact'):
+            print('ERROR: Bad QR code. Found', data)
             return (UNKNOWN_Y_LOC, 0)
-        y_loc = results[0].position[0][1]
+        qr_absolute_pos = int(data.strip('exact-'))
+        y_loc = qr_absolute_pos - results[0].position[0][1]
         diff = 0
         if prev_y_loc != UNKNOWN_Y_LOC:
             diff = prev_y_loc - y_loc
