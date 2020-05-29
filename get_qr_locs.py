@@ -14,7 +14,7 @@ UNKNOWN_Y_LOC = -9999
 
 
 def read_and_process():
-    vidcap = cv2.VideoCapture('window-1573602685.mp4')
+    vidcap = cv2.VideoCapture('bouncy3.mp4')
     success,image = vidcap.read()
     count = 0
     ret = {'x': [], 'diff': [], 'y_loc': []}
@@ -44,6 +44,7 @@ def get_qr_locs(fpath, prev_y_loc):
     scanner = zbar.Scanner(only_qrcode_zbar_config())
     start = time.time()
     results = scanner.scan(grayImage)
+    # print(results)
     if len(results) > 0:
         data = results[0].data.decode()
         if not data.startswith('exact'):
@@ -66,3 +67,5 @@ def analyze_video():
     fig.show()
 
 analyze_video()
+# get_qr_locs('frames/frame310.jpg', 0)
+# get_qr_locs('frames/frame311.jpg', 0)

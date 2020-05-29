@@ -21,6 +21,30 @@ function make_qr_code(x, y) {
   document.querySelector('body').appendChild(img);
 }
 
+function bounce_scroll() {
+  let cur_time = 0;
+  let direction = 1;
+  const loop = (time__ms) => {
+    if (cur_time == 0) {
+      cur_time = time__ms;
+    }
+    const diff = time__ms - cur_time;
+    cur_time = time__ms;
+    let distance = diff * 2; // float?
+    const max_scroll =
+      document.documentElement.scrollHeight - window.innerHeight;
+    distance *= direction;
+    if (distance + window.scrollY >= max_scroll) {
+      direction = -direction;
+    } else if (distance + window.scrollY <= 0) {
+      direction = -direction;
+    }
+    window.scrollTo(0, window.scrollY + distance);
+    requestAnimationFrame(loop);
+  };
+  requestAnimationFrame(loop);
+}
+
 make_qr_code(10, 1000);
 make_qr_code(10, 2000);
 make_qr_code(10, 3000);
